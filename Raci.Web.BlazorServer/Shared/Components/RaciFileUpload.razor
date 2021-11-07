@@ -1,0 +1,31 @@
+﻿<RadzenUpload Accept="image/*" Url="@_uploadUrl" Progress="@((args) => OnProgress(args, "Image upload"))"></RadzenUpload>
+
+@code {
+    int progress;
+    string info;
+    private string _uploadUrl = "upload/image/";
+
+    [Parameter]
+    public string UploadFor
+    {
+        get
+        {
+            return _uploadUrl;
+        }
+        set
+        {
+            _uploadUrl = _uploadUrl + "{" + value + "}";
+        }
+    }
+
+    void OnProgress(UploadProgressArgs args, string name)
+    {
+        this.info = $"%'{name}'/ {args.Loaded} of {args.Total} bytes.";
+        this.progress = args.Progress;
+
+        if (args.Loaded == args.Total)
+        {
+
+        }
+    }
+}

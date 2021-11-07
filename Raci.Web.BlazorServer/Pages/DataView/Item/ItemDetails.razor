@@ -1,0 +1,141 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base;
+@using Raci.Web.BlazorServer.Shared.Components;
+@using Raci.Domain.Enums;
+@using Microsoft.AspNetCore.Components.Forms;
+
+@page "/data-view/item/add"
+@page "/data-view/item/{ItemId}"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    @if (_state.Details == null)
+    {
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background-color: white">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data-view/item">Sản phẩm</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Chi tiết sản phẩm</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTabs Change=@OnChange>
+                    <Tabs>
+                        <RadzenTabsItem Text="Chi tiết sản phẩm">
+                            <RadzenFieldset Text="Thông tin chung">
+                                @if (ItemId != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img style="height: 300px" src="@($"{_navigationManager.BaseUri}{_state.Details.ImageUrl}")" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            <RadzenUpload Accept="image/*"
+                                                          Url="@($"upload/item-image/{_state.Details.Id}")"
+                                                          Progress="@((args) => OnProgress(args, "Image upload"))"
+                                                          ChooseText="Thay đổi">
+                                            </RadzenUpload>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-12">
+                                            @_state.Details.ItemRatingStar <RadzenRating Value="@Convert.ToInt32(_state.Details.ItemRatingStar)"/> - @_state.Details.NumberOfOrders đã bán
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-4 align-items-center d-flex">
+                                            <RadzenLabel Text="Id:" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <p>@_state.Details.Id.ToString()</p>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Tên món tiếng Việt:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="ItemNameVN" @bind-Value="_state.Details.NameVN" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Tên món tiếng Anh:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="ItemNameEN" @bind-Value="_state.Details.NameEN" />
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Giá VND:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenNumeric style="width: 100%;" Name="PriceVND" @bind-Value="_state.Details.PriceVND" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Giá USD:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenNumeric style="width: 100%;" Name="PriceUSD" @bind-Value="_state.Details.PriceUSD" />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Kích cỡ:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <SelectEnumSingle TEnum="ItemSizeEnum"
+                                                          Value="_state.Details.Size"
+                                                          ValueChanged="@((value) => SetItemSize(value))" />
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-12">
+                @if (ItemId == null && this.UserPagePermissions.CanAdd)
+                {
+                    <RadzenButton Click=@(args => HandleOnAddOrUpdateButtonClicked()) Text="Thêm" ButtonStyle="ButtonStyle.Info" Icon="add_box" />
+
+                }
+                else if (ItemId != null)
+                {
+                    if (this.UserPagePermissions.CanEdit)
+                    {
+                        <RadzenButton Click=@(args => HandleOnAddOrUpdateButtonClicked()) Text="Cập nhật" ButtonStyle="ButtonStyle.Secondary" Icon="save" />
+                    }
+                    if (this.UserPagePermissions.CanDelete)
+                    {
+                        <RadzenButton Click=@(args => HandleOnDeleteButtonClicked()) Text="Xóa" ButtonStyle="ButtonStyle.Danger" Icon="delete"/>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,43 @@
+﻿@using Raci.Common.Helpers;
+
+@page "/data-view/item"
+
+@attribute [Authorize]
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="/data-view/item/add" class="btn btn-primary" role="button" aria-disabled="true"><RadzenIcon Icon="add_box" /> Thêm mới</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="8"
+                        AllowSorting="true" Data="@items" TItem="ItemDto" ColumnWidth="200px"
+                        Style="margin-top: 10px">
+                <Columns>
+                    <RadzenGridColumn TItem="ItemDto" Property="Id" Title="Id">
+                        <Template Context="data">
+                            <a href="/data-view/item/@data.Id">@data.Id</a>
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="ItemDto" Property="NameVN" Title="Tên VN" />
+                    <RadzenGridColumn TItem="ItemDto" Property="NameEN" Title="Tên EN" />
+                    <RadzenGridColumn TItem="ItemDto" Property="PriceVND" Title="Giá VND" Width="100px" />
+                    <RadzenGridColumn TItem="ItemDto" Property="PriceUSD" Title="Giá USD" Width="100px" />
+                    <RadzenGridColumn TItem="ItemDto" Property="Size" Title="Size" Width="100px">
+                        <Template Context="data">
+                            @(data.Size.ToEnumString())
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="ItemDto" Property="NumberOfOrders" Title="Đã bán" Width="80px"/>
+                    <RadzenGridColumn TItem="ItemDto" Property="AuditStatus" Title="Trạng thái" Width="100px">
+                        <Template Context="data">
+                            @(data.AuditStatus.ToEnumString())
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,253 @@
+﻿@typeparam IModal
+
+<div id="component_@Id">
+    <div class="row">
+
+        <div class="col-12 dropzone-section">
+            <form action="#" class="dropzone" id="@Id">
+                <div class="fallback">
+                    <input name="file" type="file" multiple />
+                </div>
+
+                <div class="dz-default dz-message"><button class="dz-button" type="button">Drop files here to upload</button></div>
+
+                @if (IsReadonly == false && RightTemplate != null)
+                {
+                    <div class="row">
+                        <div class="col-12">
+
+                            @RightTemplate.ChildContent
+                        </div>
+                    </div>
+
+                }
+            </form>
+
+        </div>
+
+    </div>
+
+    @if (IsReadonly && RightTemplate != null)
+    {
+
+        <div class="row border">
+            <div class="col-12 pt-3">
+
+
+                @RightTemplate.ChildContent
+            </div>
+        </div>
+
+    }
+
+</div>
+
+
+<SectionTemplate @ref="RightTemplate">
+
+    @{
+        var currentFiles = _fileItems;
+
+        if (this.HideDeletingFiles)
+        {
+            currentFiles = currentFiles.Where(p => p.NeedToDelete == false).ToList();
+        }
+
+    }
+
+    @if (DisplayTemplate != null)
+    {
+        @DisplayTemplate(new DisplayTemplateModal<IModal> { Dropzone = this, Files = currentFiles })
+    }
+
+
+    @if (DisplayTemplate == null)
+    {
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th style="width:200px">Preview @(MaxFiles == null ? "" : $"(Max Files: {MaxFiles})")</th>
+
+                    @if (IsReadonly == false)
+                    {
+                        @if (ItemTemplate != null)
+                        {
+                            <th></th>
+                        }
+
+                        @if (currentFiles.Any(p => (p.IsImage || (!p.IsImage && !p.IsVideo))) && IsShowFileDetail)
+                        {
+                            <th></th>
+                        }
+
+                        <th style="width:110px">Sort Order</th>
+                        <th style="width:50px">Action</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var file in currentFiles)
+                {
+                    <tr>
+                        <td>
+                            @if (file.IsImage || file.IsGifImage)
+                            {
+                                <a href="@GetPreviewUrlForImage(file)" target="_blank">
+                                    <img id="img_@file.Id" src="@GetThumbnailUrlForImage(file)" class="" style="height: 100px;">
+                                </a>
+                            }
+
+                            @if (file.IsVideo)
+                            {
+                                <video controls style="max-width:320px !important;">
+                                    <source src="@GetAbsoluteUrl(file)" type="video/mp4">
+                                </video>
+                                @*<a href="@GetAbsoluteUrl(file)" target="_blank"><img id="img_@file.Id" src="/images/video-icon.svg" class="" style="height: 100px;"></a>*@
+                            }
+
+                            @if (file.IsUploading)
+                            {
+
+                                <div class="sk-spinner sk-spinner-three-bounce">
+                                    <div class="sk-bounce1"></div>
+                                    <div class="sk-bounce2"></div>
+                                    <div class="sk-bounce3"></div>
+                                </div>
+                            }
+                            else
+                            {
+                                @if (file.NeedToDelete)
+                                {
+                                    <span class="badge badge-danger">Deleting</span>
+                                }
+                                else if (file.IsTemporaryFile)
+                                {
+                                    <span class="badge badge-info">New</span>
+                                }
+                            }
+
+                        </td>
+
+                        @if (this.FileType == "photo" && IsShowFileDetail)
+                        {
+                            <td>
+                                <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="Title" @bind-value="file.Title" />
+                                <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="Alternate" @bind-value="file.AlternateText" />
+                                <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="ImageLink" value="@GetPreviewUrlForImage(file)" readonly />
+
+                            </td>
+                        }
+
+                        @if (this.FileType != "photo" && this.FileType != "icon" && IsShowFileDetail)
+                        {
+                            <td>
+                                <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="File Name" @bind-value="file.OriginalFileName" />
+
+                                <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="Title" @bind-value="file.Title" />
+
+                                <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="Link" value="@GetSignedUrlForDocument(file)" readonly />
+                            </td>
+                        }
+
+                        @if (this.FileType == "icon" && IsShowFileDetail)
+                        {
+                            <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="Id" @bind-value="file.Id" readonly />
+
+                            <input type="text" class="form-control" style="margin-bottom:5px;" placeholder="Link" value="@GetOriginalUrlForImage(file)" readonly />
+                        }
+
+                        @if (IsReadonly == false)
+                        {
+                            @if (ItemTemplate != null)
+                            {
+                                <td>
+                                    @ItemTemplate(file)
+                                </td>
+                            }
+
+                            <td>
+                                @if (file.NeedToDelete == false)
+                                {
+                                    <input type="text" class="form-control" title="Sort Order" value="@(file.SortOrder + 1)" readonly>
+                                    @if (this.AllowToSort)
+                                    {
+                                        <div class="d-flex flex-row bd-highlight mt-1">
+
+                                            <button class="btn btn-white" type="button" title="Move up"
+                                                    @onclick="@(() =>MoveUp(file))">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </button>
+
+                                            <button class="btn btn-white" type="button" title="Move down"
+                                                    @onclick="@(() =>MoveDown(file))">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </button>
+
+                                            <button class="btn btn-white" type="button" title="Move top"
+                                                    @onclick="@(() =>MoveToTop(file))">
+                                                <i class="fa fa-arrow-circle-up"></i>
+                                            </button>
+
+                                        </div>
+                                    }
+                                }
+
+                            </td>
+                            <td>
+                                @if (ActionTemplate == null)
+                                {
+                                    @if (file.NeedToDelete == false)
+                                    {
+                                        <button type="button" class="btn-lg btn-danger btn-xs mr-lg-1" @onclick="@(async ()=> await RemoveFileAsync(file))">
+                                            Delete
+                                        </button>
+
+                                        @if (CanDownloadAll)
+                                        {
+                                            <button type="button" class="btn-lg btn-success btn-xs mt-1" @onclick="@(async () => await OnDownloadClicked(file))">
+                                                Download
+                                            </button>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    @ActionTemplate(file)
+                                }
+
+                            </td>
+                        }
+
+                    </tr>
+                }
+
+
+            </tbody>
+
+        </table>
+
+        @if (currentFiles.Count > 0)
+        {
+            <div class="form-group col-lg-12 d-flex justify-content-end">
+
+                @if (CanRemoveAll)
+                {
+                    <button type="button" class="btn btn-success mr-lg-1" @onclick="@(async () => await RemoveAllFileAsync())">
+                        Remove All
+                    </button>
+                }
+
+                @if (CanDownloadAll)
+                {
+                    <button type="button" class="btn btn-success" @onclick="@( async () => await OnDownloadAllClicked())">
+                        Download All
+                    </button>
+                }
+
+            </div>
+        }
+    }
+
+
+</SectionTemplate>

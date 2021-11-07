@@ -1,0 +1,13 @@
+﻿@page "/home"
+@attribute [Authorize]
+
+
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Welcome to Alan Coffee System!</h1>
+    </Authorized>
+    <NotAuthorized>
+        You must login!
+    </NotAuthorized>
+</AuthorizeView>

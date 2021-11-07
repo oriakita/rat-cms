@@ -1,0 +1,65 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base;
+@using Raci.Common.Helpers;
+
+@page "/data-view/customer/{CustomerId}"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    @if (_state.Details == null)
+    {
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background-color: white">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data-view/customer">Khách hàng</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Thông tin khách hàng</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTabs Change=@OnChange>
+                    <Tabs>
+                        <RadzenTabsItem Text="Thông tin khách hàng">
+                            <RadzenCard Style="width:100%; margin-bottom: 20px; height:500px;">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div>Tên khách hàng:</div>
+                                        <b>@(_state.Details.FullName)</b>
+                                        <br />
+                                        <RadzenImage Path="@($"{_navigationManager.BaseUri}{_state.Details.Avatar}")" Style="width:200px;" />
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div>UserName:</div>
+                                        <b>@(_state.Details.UserName)</b>
+                                        <div style="margin-top:20px">Giới tính:</div>
+                                        <b>@(_state.Details.Gender.ToEnumString())</b>
+                                        <div style="margin-top:20px">Số điện thoại:</div>
+                                        <b>@(_state.Details.CountryCallingCode + _state.Details.PhoneNumber)</b>
+                                        <div style="margin-top:20px">Loại:</div>
+                                        <b>@(_state.Details.UserType.ToEnumString())</b>
+                                        <div style="margin-top:20px">Email:</div>
+                                        <b>@(_state.Details.Email)</b>
+                                        <div style="margin-top:20px">Mã ngôn ngữ:</div>
+                                        <b>@(_state.Details.LanguageCode)</b>
+                                        <div style="margin-top:20px">Trạng thái:</div>
+                                        <b>@(_state.Details.AuditStatus.ToEnumString())</b>
+                                    </div>
+                                </div>
+                            </RadzenCard>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </div>
+    }
+</div>

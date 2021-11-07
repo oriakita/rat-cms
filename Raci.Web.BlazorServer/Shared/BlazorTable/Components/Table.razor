@@ -1,0 +1,166 @@
+﻿@*@using 
+@using 
+
+@typeparam TableItem
+@inherits HzComponentBase
+
+<CascadingValue Value="(ITable<TableItem>)this" Name="Table">
+    <div class="d-flex w-100 form-group" style="margin-top:1rem">
+        <TotalCountRow TotalCount="@TotalCount" />
+        @if (DisplayColumnSelection)
+        {
+
+            <ColumnVisibilitySelection TTableItem="TableItem" @ref="_columnVisibilitySelection" />
+        }
+
+        @if (DisplayPageSize)
+        {
+            <label class="my-auto mr-3 @(DisplayColumnSelection ? "" : "ml-auto")">
+                Show <select name="DataTables_Table_0_length"
+                             class="form-control form-control-sm"
+                             style="display: inline-block; width: 75px;"
+                             @bind-value="@PageSize"
+                             @bind-value:event="onchange">
+                    <option value="15">15</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select> entries
+            </label>
+        }
+
+        @if (DisplayPager)
+        {
+            <Pager ShowPageNumber="true" ShowTotalCount="true" />
+        }
+    </div>
+
+    @if (Columns.Any())
+    {
+        <table class="table table-bordered table-hover table-sm blazorTable @TableClass" @attributes="UnknownParameters">
+            <thead class="@TableHeadClass">
+                <tr style="cursor: pointer;">
+                    @foreach (IColumn<TableItem> column in Columns)
+                    {
+                        if (!column.IsVisible) continue;
+
+                        var widthStyle = !string.IsNullOrEmpty(column.Width) ? $"width:{column.Width};" : "";
+                        var minWidthStyle = !string.IsNullOrEmpty(column.MinWidth) ? $"min-width:{column.MinWidth};" : "";
+
+                        <th style="@widthStyle @minWidthStyle user-select: none"
+                            @ondrop="@(() => HandleDrop(column))"
+                            @ondragstart="@(() => HandleDragStart(column))"
+                            ondragover="event.preventDefault();"
+                            draggable="@(ColumnReorder.ToString())"
+                            @key="column"
+                            class="@(column.Class)">
+
+                            <div style="display: flex;" @onclick="@(async () => await column.SortByAsync())">
+                                <span>@column.Title</span>
+
+                                @if (column.SortColumn)
+                                {
+                                    if (column.SortDescending)
+                                    {
+                                        <span style="margin-left: auto;font-weight: 400;">Desc</span>
+                                    }
+                                    else
+                                    {
+                                        <span style="margin-left: auto;font-weight: 400;">Asc</span>
+                                    }
+                                }
+
+                                @if (column.Filterable)
+                                {
+                                    <div class="float-right"
+                                         @onclick="@((x) => column.ToggleFilter())"
+                                         @onclick:stopPropagation>
+                                        <a href="javascript:;" @ref="column.FilterRef"
+                                           style="text-decoration: none"><span style="@(column.Filter == null ? "opacity: 0.2;" : string.Empty)">&#128269;</span></a>
+                                    </div>
+                                }
+                            </div>
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody class="@TableBodyClass">
+                @if (TempItems != null)
+                {
+                    if (TempItems.Any())
+                    {
+                        foreach (TableItem item in TempItems)
+                        {
+                            <tr @key="item" class="@RowClass(item)">
+                                @foreach (IColumn<TableItem> column in Columns)
+                                {
+                                    if (!column.IsVisible) continue;
+
+                                    <td @key="column"
+                                        style="@(column.Align == Align.Left
+                                                    ? "text-align: left;"
+                                                    : column.Align == Align.Center
+                                                        ? "text-align: center;"
+                                                        : column.Align == Align.Right
+                                                            ? "text-align: right;"
+                                                            : string.Empty)"
+                                        class="@(column.Class)">
+
+                                        @if (IsEditMode && column.EditTemplate != null)
+                                        {
+                                            @column.EditTemplate(item)
+                                        }
+                                        else
+                                        {
+                                            if (column.Template == null)
+                                            {
+                                                @column.Render(item);
+                                            }
+                                            else
+                                            {
+                                                @column.Template(item);
+                                            }
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else if (_emptyDataTemplate != null)
+                    {
+                        <tr>
+                            <td colspan="@Columns.Count">
+                                @_emptyDataTemplate
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@Columns.Count">
+                            @if (_loadingDataTemplate != null)
+                            {
+                                @_loadingDataTemplate
+                            }
+                            else
+                            {
+                                <div class="d-flex text-center" style="height: 80vh;">
+                                    <Hoozing.BlazorComponent.Components.Spinner IsLoading="true" />
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <Column TableItem="TableItem"
+            Title="#"
+            Field="@(x => x.OrderNumber)"
+            Sortable="true"
+            Filterable="false" />
+
+    @ChildContent
+</CascadingValue>*@

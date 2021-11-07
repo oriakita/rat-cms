@@ -1,0 +1,43 @@
+﻿@using Raci.Common.Helpers;
+@using System.Collections.Generic;
+@using System.Linq;
+
+@typeparam TEnum
+@inherits ComponentBase
+
+<select class="@($"form-control {Class}")"
+        @bind-value="@SelectedValue"
+        @bind-value:event="onchange"
+        required="@IsRequired"
+        disabled="@IsDisabled">
+    @{
+        var dataSource = new List<TEnum>();
+
+ if (this.DataSource != null)
+ {
+     dataSource.AddRange(this.DataSource());
+ }
+ else
+ {
+     foreach (TEnum value in Enum.GetValues(typeof(TEnum)))
+         dataSource.Add(value);
+ }
+
+ foreach (TEnum value in dataSource)
+ {
+    @if (ItemTemplate == null)
+    {
+        var displayName = value.GetDisplayValue();
+        if (displayName == "Undefined") continue;
+        if (DisplayNotSet == false && displayName == "Not Set") continue;
+
+        <option value="@value.ToEnumString()">@displayName</option>
+    }
+    else
+    {
+        <option value="@value.ToEnumString()">@ItemTemplate(value)</option>
+    }
+
+}
+    }
+</select>

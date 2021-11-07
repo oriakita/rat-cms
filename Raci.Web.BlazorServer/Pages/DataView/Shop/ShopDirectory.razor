@@ -1,0 +1,38 @@
+﻿@page "/data-view/shop"
+
+@attribute [Authorize]
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="/data-view/shop/add" class="btn btn-primary" role="button" aria-disabled="true">Thêm mới</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="4"
+                        AllowSorting="true" Data="@shops" TItem="ShopDto" ColumnWidth="200px"
+                        Style="margin-top: 10px">
+                <Columns>
+                    <RadzenGridColumn TItem="ShopDto" Property="Id" Title="Id">
+                        <Template Context="data">
+                            <a href="/data-view/shop/@data.Id">@data.Id</a>
+                        </Template>
+                    </RadzenGridColumn>
+                    @*<RadzenGridColumn TItem="ShopDto" Property="Photo" Title="Photo" Sortable="false" Filterable="false">
+                    <Template Context="data">
+                        <RadzenImage Path="@data?.I" />
+                    </Template>
+                </RadzenGridColumn>*@
+                    <RadzenGridColumn TItem="ShopDto" Property="Name" Title="Tên shop" Width="150px" />
+                    <RadzenGridColumn TItem="ShopDto" Property="Address" Title="Địa chỉ" />
+                    <RadzenGridColumn TItem="ShopDto" Property="ReleaseDate" Title="Ngày khai trương">
+                        <Template Context="data">
+                            @String.Format("{0:d}", data.ReleaseDate)
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </div>
+    </div>
+</div>

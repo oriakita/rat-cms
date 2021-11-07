@@ -1,0 +1,96 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base;
+
+@page "/data-view/shop/add"
+@page "/data-view/shop/{ShopId}"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    @if (_state.Details == null)
+    {
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background-color: white">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data-view/shop">Cửa hàng</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Chi tiết cửa hàng</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <RadzenTabs Change=@OnChange>
+                    <Tabs>
+                        <RadzenTabsItem Text="Chi tiết cửa hàng">
+                            <RadzenFieldset Text="Thông tin chung">
+                                @if (ShopId != null)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-4 align-items-center d-flex">
+                                            <RadzenLabel Text="Id:" />
+                                        </div>
+                                        <div class="col-md-8">
+                                            <p>@_state.Details.Id.ToString()</p>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Tên cửa hàng"/> <span class="text-danger">*</span>:
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="ShopNr" @bind-Value="_state.Details.Name" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Địa chỉ" /> <span class="text-danger">*</span>:
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="ShopNr" @bind-Value="_state.Details.Address" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Ngày khai trương:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenDatePicker style="width: 100%;" Name="ReleaseDate" @bind-Value="_state.Details.ReleaseDate" />
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-lg-12">
+                @if (ShopId == null && this.UserPagePermissions.CanAdd)
+                {
+                    <RadzenButton Click=@(args => HandleOnAddOrUpdateButtonClicked()) Text="Thêm" ButtonStyle="ButtonStyle.Info" Icon="add" />
+
+                }
+                else if (ShopId != null)
+                {
+                    if (this.UserPagePermissions.CanEdit)
+                    {
+                        <RadzenButton Click=@(args => HandleOnAddOrUpdateButtonClicked()) Text="Cập nhật" ButtonStyle="ButtonStyle.Secondary" Icon="save" />
+                    }
+                    if (this.UserPagePermissions.CanDelete)
+                    {
+                        <RadzenButton Click=@(args => HandleOnDeleteButtonClicked()) Text="Xóa" ButtonStyle="ButtonStyle.Danger" Icon="delete"/>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>

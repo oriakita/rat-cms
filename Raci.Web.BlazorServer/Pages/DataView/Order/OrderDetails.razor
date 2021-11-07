@@ -1,0 +1,117 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base;
+@using Raci.Common.Helpers;
+@using static Raci.Application.Order.Queries.OrderDetailsGetByIdQuery;
+
+@page "/data-view/order/{OrderId}"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    @if (_state.Details == null)
+    {
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background-color: white">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/data-view/order">Đơn hàng</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Chi tiết đơn hàng</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTabs Change=@OnChange>
+                    <Tabs>
+                        <RadzenTabsItem Text="Chi tiết hóa đơn">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <span>Trạng thái: </span> <span class="badge badge-success">@_state.Details.OrderStatus.GetDisplayValue()</span>
+                                </div>
+                            </div>
+                            <RadzenFieldset Text="Thông tin đơn hàng">
+                                <div class="row">
+                                    <div class="col-lg-3 text-right">
+                                        <p><b>Thời gian đặt hàng:</b></p>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <p>@_state.Details.CreatedDate</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 text-right">
+                                        <p><b>Thu ngân:</b></p>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <p>@_state.Details.CashierName</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 text-right">
+                                        <p><b>Cửa hàng:</b></p>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <p><a href="data-view/shop/@_state.Details.ShopId">@_state.Details.ShopName</a>, (@_state.Details.ShopAddress)</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3 text-right">
+                                        <p><b>Tên khách hàng:</b></p>
+                                    </div>
+                                    <div class="col-lg-9">
+                                        <p><a href="data-view/customer/@_state.Details.AccountId">@_state.Details.CustomerName</a></p>
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+
+                            <RadzenGrid AllowSorting="true" Data="@_state.Details.OrderItemDetails" TItem="OrderItemDetailDto" ColumnWidth="200px"
+                                        Style="margin-top: 10px">
+                                <Columns>
+                                    <RadzenGridColumn TItem="OrderItemDetailDto" Property="ItemName" Title="Tên món">
+                                        <Template Context="data">
+                                            <a href="data-view/item/@data.ItemId">@data.ItemName</a>
+                                        </Template>
+                                    </RadzenGridColumn>
+                                    <RadzenGridColumn TItem="OrderItemDetailDto" Property="Quantity" Title="Số lượng" />
+                                    <RadzenGridColumn TItem="OrderItemDetailDto" Property="UnitPrice" Title="Đơn giá">
+                                        <Template Context="data">
+                                            @String.Format("{0:n0}", data.UnitPrice)
+                                        </Template>
+                                    </RadzenGridColumn>
+                                    <RadzenGridColumn TItem="OrderItemDetailDto" Property="Price" Title="Thành tiền">
+                                        <Template Context="data">
+                                            @String.Format("{0:n0}", (data.Quantity * data.UnitPrice))
+                                        </Template>
+                                    </RadzenGridColumn>
+                                </Columns>
+                            </RadzenGrid>
+
+                            <div class="row">
+                                <div class="col-lg-12 text-right">
+                                    <p><b>TỔNG TIỀN HÀNG</b>: @_state.Details.TotalPrice.ToString("N0") VND</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 text-right">
+                                    <p><b>TỔNG THANH TOÁN</b>: @_state.Details.TotalPay.ToString("N0") VND</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 text-right">
+                                    <p><b>KHÁCH ĐƯA</b>: @_state.Details.CashAdvance.ToString("N0") VND</p>
+                                </div>
+                            </div>
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </div>
+    }
+</div>

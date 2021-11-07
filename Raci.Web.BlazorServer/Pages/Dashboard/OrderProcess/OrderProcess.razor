@@ -1,0 +1,37 @@
+﻿@using Raci.Application.Order.Queries;
+
+@page "/order-process"
+
+@attribute [Authorize]
+
+<div class="container-fluid">
+    @foreach (var shop in _orderByShops)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <RadzenCard Style="width:100%; margin-bottom: 20px;">
+                    <RadzenFieldset Text="@shop.ShopName">
+                        <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="8"
+                                    AllowSorting="true" Data="@shop.OrdersProccessing" TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" ColumnWidth="200px"
+                                    Style="margin-top: 10px">
+                            <Columns>
+                                <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="Id" Title="Id">
+                                    <Template Context="data">
+                                        <a href="/order-process/@data.Id">@data.Id</a>
+                                    </Template>
+                                </RadzenGridColumn>
+                                <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="CreatedDate" Title="Ngày tạo" />
+                                <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="CustomerName" Title="Tên khách hàng" />
+                                <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="TotalPay" Title="Tổng thanh toán">
+                                    <Template Context="data">
+                                        @(data.TotalPay.ToString("N0"))
+                                    </Template>
+                                </RadzenGridColumn>
+                            </Columns>
+                        </RadzenGrid>
+                    </RadzenFieldset>
+                </RadzenCard>
+            </div>
+        </div>
+    }
+</div>

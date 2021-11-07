@@ -1,0 +1,36 @@
+﻿@using Raci.Persistence;
+@inherits LayoutComponentBase
+
+<div class="sidebar">
+    <NavMenu />
+</div>
+
+<div class="main" style="background-color: #F3F3F4">
+    <div class="top-row px-4" style="z-index: 1; background-color: white">
+        <AuthorizeView>
+            <Authorized>
+                <RadzenProfileMenu>
+                    <Template>
+                        <img src="images/data/avatars/@(_loggingUser.UserId).jpg" 
+                             class="rounded-circle" 
+                             width="36" 
+                             height="36">
+                    </Template>
+                    <ChildContent>
+                        <RadzenProfileMenuItem Text="Log out" Path="log-out" Icon="account_circle"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Profile" Path="profile" Icon="line_weight"></RadzenProfileMenuItem>
+                    </ChildContent>
+                </RadzenProfileMenu>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+
+    <div class="content px-4">
+        @Body
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private LoggingUser _loggingUser { get; set; }
+}

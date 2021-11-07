@@ -1,0 +1,42 @@
+﻿@using Raci.Common.Helpers;
+
+@page "/data-view/order"
+
+@attribute [Authorize]
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="8"
+                        AllowSorting="true" Data="@orders" TItem="OrderDto" ColumnWidth="200px"
+                        Style="margin-top: 10px">
+                <Columns>
+                    <RadzenGridColumn TItem="OrderDto" Property="Id" Title="Id">
+                        <Template Context="data">
+                            <a href="/data-view/order/@data.Id">@data.Id</a>
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="OrderDto" Property="OrderStatus" Title="Trạng thái" Width="100px">
+                        <Template Context="data">
+                            @(data.OrderStatus.ToEnumString())
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="OrderDto" Property="CreatedDate" Title="Thời gian" />
+                    <RadzenGridColumn TItem="OrderDto" Property="CashAdvance" Title="Tổng thanh toán">
+                        <Template Context="data">
+                            @(data.TotalPay.ToString("N0"))
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="OrderDto" Property="Change" Title="Tiền khách đưa">
+                        <Template Context="data">
+                            @(data.CashAdvance.ToString("C0"))
+                        </Template>
+                    </RadzenGridColumn>
+                    <RadzenGridColumn TItem="OrderDto" Property="CustomerName" Title="Khách hàng" />
+                    <RadzenGridColumn TItem="OrderDto" Property="ShopName" Title="Cửa hàng" />
+
+                </Columns>
+            </RadzenGrid>
+        </div>
+    </div>
+</div>
