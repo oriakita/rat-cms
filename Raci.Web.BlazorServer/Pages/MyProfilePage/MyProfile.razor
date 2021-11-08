@@ -1,0 +1,131 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base;
+@using Raci.Web.BlazorServer.Shared.Components
+@using Raci.Domain.Enums
+
+@page "/profile"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background-color: white">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Thông tin của tôi</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <RadzenTabs>
+                <Tabs>
+                    @if (_state.IsLoading || !_state.IsReady)
+                    {
+                        <Raci.Web.BlazorServer.Shared.Components.Spinner></Raci.Web.BlazorServer.Shared.Components.Spinner>
+                    }
+                    else
+                    {
+                        <RadzenTabsItem Text="Thông tin cá nhân">
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="font-weight-bold mb-2">Họ</label><span class="text-danger">*</span>
+                                    <RadzenTextBox Style="width: 100%" Name="LastName" @bind-Value="_state.Details.LastName" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="font-weight-bold mb-2">Tên</label><span class="text-danger">*</span>
+                                    <RadzenTextBox Style="width: 100%" Name="FirstName" @bind-Value="_state.Details.FirstName" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold mb-2">User Name</label>
+                                    <RadzenTextBox Style="width: 100%"
+                                                   Name="UserName"
+                                                   @bind-Value="_state.Details.UserName"
+                                                   ReadOnly="true" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold mb-2">Email</label><span class="text-danger">*</span>
+                                    <RadzenTextBox Style="width: 100%"
+                                                   Name="Email"
+                                                   @bind-Value="_state.Details.Email" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="font-weight-bold mb-2">Số điện thoại</label><span class="text-danger">*</span>
+                                    <RadzenTextBox Style="width: 100%" Name="PhoneNumber" @bind-Value="_state.Details.PhoneNumber" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="font-weight-bold mb-2">Giới tính</label>
+                                    <SelectEnumSingle TEnum="GenderEnum"
+                                                      @bind-Value="_state.Details.Gender" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <RadzenButton Style="float: right;"
+                                                  Click=@(args => HandleOnUpdateProfileButtonClicked()) 
+                                                  Text="Cập nhật" 
+                                                  ButtonStyle="ButtonStyle.Success" 
+                                                  Icon="save" />
+                                </div>
+                            </div>
+                        </RadzenTabsItem>
+
+                        <RadzenTabsItem Text="Đổi mật khẩu">
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold mb-2">Mật khẩu cũ</label>
+                                    <RadzenPassword Style="width: 100%"
+                                                    Name="OldPassword"
+                                                    @bind-Value="_oldPassword" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold mb-2">Mật khẩu mới</label>
+                                    <RadzenPassword Style="width: 100%"
+                                                    Name="NewPassword"
+                                                    @bind-Value="_newPassword" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold mb-2">Nhập lại mật khẩu mới</label>
+                                    <RadzenPassword Style="width: 100%"
+                                                    Name="RepeatPassword"
+                                                    @bind-Value="_repeatPassword" />
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <RadzenButton Style="float: right;"
+                                                  Click=@(args => HandleOnUpdatePasswordButtonClicked())
+                                                  Text="Cập nhật"
+                                                  ButtonStyle="ButtonStyle.Success"
+                                                  Icon="save" />
+                                </div>
+                            </div>
+                        </RadzenTabsItem>
+                    }
+                </Tabs>
+            </RadzenTabs>
+        </div>
+    </div>
+    
+</div>

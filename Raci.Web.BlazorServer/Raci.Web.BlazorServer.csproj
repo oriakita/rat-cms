@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\System\MyProfilePage\" />
+    <Folder Include="Pages\RaciSystem\" />
     <Folder Include="Security\" />
   </ItemGroup>
 
