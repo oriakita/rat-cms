@@ -1,4 +1,6 @@
-﻿@page "/data-view/shop"
+﻿@using Raci.Web.BlazorServer.Shared.Components
+
+@page "/data-view/shop"
 
 @attribute [Authorize]
 
@@ -20,15 +22,15 @@
                         </Template>
                     </RadzenGridColumn>
                     @*<RadzenGridColumn TItem="ShopDto" Property="Photo" Title="Photo" Sortable="false" Filterable="false">
-                    <Template Context="data">
-                        <RadzenImage Path="@data?.I" />
-                    </Template>
-                </RadzenGridColumn>*@
+                            <Template Context="data">
+                                <RadzenImage Path="@data?.I" />
+                            </Template>
+                        </RadzenGridColumn>*@
                     <RadzenGridColumn TItem="ShopDto" Property="Name" Title="Tên shop" Width="150px" />
                     <RadzenGridColumn TItem="ShopDto" Property="Address" Title="Địa chỉ" />
                     <RadzenGridColumn TItem="ShopDto" Property="ReleaseDate" Title="Ngày khai trương">
                         <Template Context="data">
-                            @String.Format("{0:d}", data.ReleaseDate)
+                            <DateTimeDisplay Value="data.ReleaseDate" />
                         </Template>
                     </RadzenGridColumn>
                 </Columns>

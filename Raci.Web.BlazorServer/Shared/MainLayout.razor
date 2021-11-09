@@ -11,14 +11,14 @@
             <Authorized>
                 <RadzenProfileMenu>
                     <Template>
-                        <img src="images/data/avatars/@(_loggingUser.UserId).jpg" 
+                        <img src="@(_loggingUser.Avatar)" 
                              class="rounded-circle" 
                              width="36" 
                              height="36">
                     </Template>
                     <ChildContent>
-                        <RadzenProfileMenuItem Text="Log out" Path="log-out" Icon="account_circle"></RadzenProfileMenuItem>
-                        <RadzenProfileMenuItem Text="Profile" Path="profile" Icon="line_weight"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Tài khoản" Path="profile" Icon="line_weight"></RadzenProfileMenuItem>
+                        <RadzenProfileMenuItem Text="Đăng xuất" Path="log-out" Icon="account_circle"></RadzenProfileMenuItem>
                     </ChildContent>
                 </RadzenProfileMenu>
             </Authorized>

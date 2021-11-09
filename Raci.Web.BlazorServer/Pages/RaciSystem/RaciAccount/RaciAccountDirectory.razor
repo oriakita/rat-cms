@@ -1,0 +1,61 @@
+﻿@using Raci.Common.Helpers
+@using Raci.Web.BlazorServer.Shared.Components
+
+@page "/raci-system/account"
+
+@attribute [Authorize]
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="/raci-system/account/add" class="btn btn-primary" role="button" aria-disabled="true"><RadzenIcon Icon="add_box" /> Thêm nhân viên</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <RadzenGrid AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" FilterMode="FilterMode.Advanced" AllowPaging="true" PageSize="8"
+                        AllowSorting="true" Data="@_accounts" TItem="RaciAccountDirectoryDto" ColumnWidth="200px"
+                        Style="margin-top: 10px">
+                <Columns>
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="Id" Title="Id" />
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="Username" Title="Username">
+                        <Template Context="data">
+                            <a href="/raci-system/account/@data.Id">@data.Username</a>
+                        </Template>
+                    </RadzenGridColumn>
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="Email" Title="Email" />
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="FirstName" Title="Tên" />
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="LastName" Title="Họ" />
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="Gender" Title="Giới tính" Width="120px">
+                        <Template Context="data">
+                            @data.Gender.GetDisplayValue()
+                        </Template>
+                    </RadzenGridColumn>
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="Role" Title="Quyền">
+                        <Template Context="data">
+                            @data.Role.GetDisplayValue()
+                        </Template>
+                    </RadzenGridColumn>
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="AuditStatus" Title="Trạng thái" Width="130px">
+                        <Template Context="data">
+                            <AuditStatusEnumDisplay Value="@data.AuditStatus" />
+                        </Template>
+                    </RadzenGridColumn>
+
+                    <RadzenGridColumn TItem="RaciAccountDirectoryDto" Property="CreatedDate" Title="Ngày tạo">
+                        <Template Context="data">
+                            <DateTimeDisplay Value="data.CreatedDate" />
+                        </Template>
+                    </RadzenGridColumn>
+                </Columns>
+            </RadzenGrid>
+        </div>
+    </div>
+</div>

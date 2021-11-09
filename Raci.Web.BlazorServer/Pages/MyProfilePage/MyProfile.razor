@@ -30,48 +30,69 @@
                     else
                     {
                         <RadzenTabsItem Text="Thông tin cá nhân">
+                            <RadzenFieldset Text="Ảnh đại diện">
+                                @if (!string.IsNullOrWhiteSpace(_state.Details.Avatar))
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img style="height: 300px" src="@($"{_navigationManager.BaseUri}{_state.Details.Avatar}")" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                }
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <RadzenUpload Accept="image/*"
+                                                      Url="@($"upload/avatar/{_state.Details.AccountId}")"
+                                                      Progress="@((args) => OnProgress(args, "Image upload"))"
+                                                      ChooseText="Thay đổi ảnh đại diện">
+                                        </RadzenUpload>
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+                            <RadzenFieldset Text="Thông tin chung">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold mb-2">Họ</label><span class="text-danger">*</span>
+                                        <RadzenTextBox Style="width: 100%" Name="LastName" @bind-Value="_state.Details.LastName" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold mb-2">Tên</label><span class="text-danger">*</span>
+                                        <RadzenTextBox Style="width: 100%" Name="FirstName" @bind-Value="_state.Details.FirstName" />
+                                    </div>
+                                </div>
 
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <label class="font-weight-bold mb-2">Họ</label><span class="text-danger">*</span>
-                                    <RadzenTextBox Style="width: 100%" Name="LastName" @bind-Value="_state.Details.LastName" />
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <label class="font-weight-bold mb-2">User Name</label>
+                                        <RadzenTextBox Style="width: 100%"
+                                                       Name="UserName"
+                                                       @bind-Value="_state.Details.UserName"
+                                                       ReadOnly="true" />
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="font-weight-bold mb-2">Tên</label><span class="text-danger">*</span>
-                                    <RadzenTextBox Style="width: 100%" Name="FirstName" @bind-Value="_state.Details.FirstName" />
-                                </div>
-                            </div>
 
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <label class="font-weight-bold mb-2">User Name</label>
-                                    <RadzenTextBox Style="width: 100%"
-                                                   Name="UserName"
-                                                   @bind-Value="_state.Details.UserName"
-                                                   ReadOnly="true" />
+                                <div class="row mb-4">
+                                    <div class="col">
+                                        <label class="font-weight-bold mb-2">Email</label><span class="text-danger">*</span>
+                                        <RadzenTextBox Style="width: 100%"
+                                                       Name="Email"
+                                                       @bind-Value="_state.Details.Email" />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <label class="font-weight-bold mb-2">Email</label><span class="text-danger">*</span>
-                                    <RadzenTextBox Style="width: 100%"
-                                                   Name="Email"
-                                                   @bind-Value="_state.Details.Email" />
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold mb-2">Số điện thoại</label><span class="text-danger">*</span>
+                                        <RadzenTextBox Style="width: 100%" Name="PhoneNumber" @bind-Value="_state.Details.PhoneNumber" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="font-weight-bold mb-2">Giới tính</label>
+                                        <SelectEnumSingle TEnum="GenderEnum"
+                                                          @bind-Value="_state.Details.Gender" />
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <label class="font-weight-bold mb-2">Số điện thoại</label><span class="text-danger">*</span>
-                                    <RadzenTextBox Style="width: 100%" Name="PhoneNumber" @bind-Value="_state.Details.PhoneNumber" />
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="font-weight-bold mb-2">Giới tính</label>
-                                    <SelectEnumSingle TEnum="GenderEnum"
-                                                      @bind-Value="_state.Details.Gender" />
-                                </div>
-                            </div>
+                            </RadzenFieldset>
+                            
 
                             <div class="row">
                                 <div class="col">

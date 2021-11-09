@@ -1,0 +1,182 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base
+@using Raci.Web.BlazorServer.Shared.Components
+@using Raci.Domain.Enums
+
+@page "/raci-system/account/add"
+@page "/raci-system/account/{AccountId}"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    @if (!_state.IsReady)
+    {
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb" style="background-color: white">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/raci-system/account">Tài khoản hệ thống</a></li>
+                        @if (AccountId != null)
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Chi tiết tài khoản</li>
+                        }
+                        else
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">Thêm mới tài khoản</li>
+                        }
+
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenTabs>
+                    <Tabs>
+                        <RadzenTabsItem Text="Chi tiết tài khoản">
+                            <RadzenFieldset Text="Ảnh đại diện">
+                                @if (!string.IsNullOrWhiteSpace(_state.Details.Avatar))
+                                {
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <img style="height: 300px" src="@($"{_navigationManager.BaseUri}{_state.Details.Avatar}")" class="img-thumbnail">
+                                        </div>
+                                    </div>
+                                }
+                                <div class="row mt-2">
+                                    <div class="col-md-12">
+                                        <RadzenUpload Accept="image/*"
+                                                      Url="@($"upload/avatar/{_state.Details.AccountId}")"
+                                                      Progress="@((args) => OnProgress(args, "Image upload"))"
+                                                      ChooseText="Thay đổi ảnh đại diện">
+                                        </RadzenUpload>
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+                            <RadzenFieldset Text="Thông tin chung">
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Id:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <p>@_state.Details.AccountId.ToString()</p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="User Name:" /><span class="text-danger">*</span>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="UserName" @bind-Value="_state.Details.UserName"
+                                                       Disabled="@(AccountId == null ? false : true)" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Đặt mật khẩu:" /><span class="text-danger">*</span>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenPassword style="width: 100%;" Name="Password" @bind-Value="_state.Details.Password" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Họ:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="FirstName" @bind-Value="_state.Details.FirstName" />
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Tên:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="LastName" @bind-Value="_state.Details.LastName" />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Email:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="Email" @bind-Value="_state.Details.Email" />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Số điện thoại:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <RadzenTextBox style="width: 100%;" Name="PhoneNumber" @bind-Value="_state.Details.PhoneNumber" />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Giới tính:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <SelectEnumSingle TEnum="GenderEnum"
+                                                          Value="_state.Details.Gender"
+                                                          ValueChanged="@((value) => { _state.Details.Gender = value; })" />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Phân Quyền:" /><span class="text-danger">*</span>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <SelectEnumSingle TEnum="RoleEnum"
+                                                          Value="_state.Details.Role"
+                                                          ValueChanged="@((value) => { _state.Details.Role = value; })" />
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-md-4 align-items-center d-flex">
+                                        <RadzenLabel Text="Cửa hàng:" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <ShopSelector Value="_state.Details.ShopGuid"
+                                                      ValueChanged="@((value) => { _state.Details.ShopGuid = value; })" />
+                                    </div>
+                                </div>
+                            </RadzenFieldset>
+
+                        </RadzenTabsItem>
+                    </Tabs>
+                </RadzenTabs>
+            </div>
+        </div>
+        <div class="row mt-2 mb-5">
+            <div class="col-lg-12">
+                @if (AccountId == null && this.UserPagePermissions.CanAdd)
+                {
+                    <RadzenButton Click=@(args => HandleOnAddOrUpdateButtonClicked()) Text="Thêm" ButtonStyle="ButtonStyle.Info" Icon="add_box" />
+
+                }
+                else if (AccountId != null)
+                {
+                    if (this.UserPagePermissions.CanEdit)
+                    {
+                        <RadzenButton Click=@(args => HandleOnAddOrUpdateButtonClicked()) Text="Cập nhật" ButtonStyle="ButtonStyle.Secondary" Icon="save" />
+                    }
+                    if (this.UserPagePermissions.CanDelete)
+                    {
+                        <RadzenButton Click=@(args => HandleOnDeleteButtonClicked()) Text="Xóa" ButtonStyle="ButtonStyle.Danger" Icon="delete" />
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>

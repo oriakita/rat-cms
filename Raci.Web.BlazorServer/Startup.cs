@@ -30,6 +30,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using CurrieTechnologies.Razor.SweetAlert2;
 using Radzen;
 using Blazored.Toast;
+using Raci.Common.Enums;
+using System.Threading;
 //using Syncfusion.Blazor;
 
 namespace Raci.Web.BlazorServer
@@ -122,7 +124,7 @@ namespace Raci.Web.BlazorServer
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
             services.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestValidationBehavior<>));
-            services.AddMediatR(typeof(LoginRequest.Handler).GetTypeInfo().Assembly);
+            services.AddMediatR(option=>option.AsScoped(), typeof(LoginRequest.Handler).GetTypeInfo().Assembly);
             var validators = AssemblyScanner.FindValidatorsInAssemblyContaining<LoginRequest.Validator>();
             validators.ForEach(validator => services.AddTransient(validator.InterfaceType, validator.ValidatorType));
         }
@@ -132,7 +134,11 @@ namespace Raci.Web.BlazorServer
             services.AddScoped<LoggingUser>(serviceProvider =>
             {
                 var contextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-                var mediator = serviceProvider.GetRequiredService<IMediator>();
+                using var scope = serviceProvider.CreateScope();
+                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+               // var mediator = serviceProvider.GetRequiredService<IMediator>();
+                //var dbContext = serviceProvider.GetRequiredService<RaciDbContext>();
 
                 var loggingUser = new LoggingUser();
 
@@ -151,11 +157,18 @@ namespace Raci.Web.BlazorServer
                     }
                 }
 
-                var userPermission = mediator.Send(new GetRoleBasedPermissionByAccountIdQuery() { AccountId = loggingUser.UserId }).GetAwaiter().GetResult();
 
-                loggingUser.UserPermissions = userPermission
+                var userPermission = Task.Run(async () => await mediator.Send(new GetRoleBasedPermissionByAccountIdQuery() { AccountId = loggingUser.UserId }))
+                    .ConfigureAwait(false).GetAwaiter().GetResult()
                     .Where(p => string.IsNullOrWhiteSpace(p.Function.Url) == false)
                     .ToList();
+
+                loggingUser.UserPermissions = userPermission;
+
+                var avatar = Task.Run(async () => await mediator.Send(new AccountAvatarGetByIdQuery() { AccountGuid = loggingUser.UserId }))
+                    .ConfigureAwait(false).GetAwaiter().GetResult();
+
+                loggingUser.Avatar = avatar;
 
                 return loggingUser;
             });

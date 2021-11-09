@@ -1,0 +1,9 @@
+﻿<RadzenDropDown AllowClear="true" TValue="Guid"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                FilterOperator="StringFilterOperator.StartsWith" AllowFiltering="true"
+                Data=@_shop TextProperty="ShopName" ValueProperty="Id" Change=@(args => OnChange(args))
+                Style="width: 100%">
+    <Template>
+        @((context as ShopTinyDto).ShopName) - @((context as ShopTinyDto).Address)
+    </Template>
+</RadzenDropDown>

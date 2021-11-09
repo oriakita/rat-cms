@@ -16,6 +16,9 @@
         [EnumMember(Value = "Inactive")]
         Inactive = 2,
 
+        [EnumMember(Value = "Temporary")]
+        Temporary = 3,
+
         [EnumMember(Value = "Deleted")]
         Deleted = 99,
     }

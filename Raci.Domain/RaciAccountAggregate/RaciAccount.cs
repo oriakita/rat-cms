@@ -19,7 +19,7 @@ namespace Raci.Domain.RaciAccountAggregate
 
         public string UserName { get; set; }
 
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
 
         public string FirstName { get; set; }
 
@@ -31,7 +31,7 @@ namespace Raci.Domain.RaciAccountAggregate
 
         public string Password { get; set; }
 
-        public string Salt { get; set; }
+        public string Salt { get; set; } = "mysalt2020abcdef";
 
         public string LanguageCode { get; set; }
 
@@ -48,7 +48,7 @@ namespace Raci.Domain.RaciAccountAggregate
         //public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
 
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; } = string.Empty;
 
         public bool PhoneNumberConfirmed { get; set; }
 

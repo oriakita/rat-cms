@@ -33,7 +33,8 @@ namespace Raci.Application.Account.Queries
                         .Include(p => p.Shop)
                         .AsNoTracking()
                         .Where(p => p.Id == query.AccountGuid
-                        && p.AuditStatus == AuditStatusEnum.Active)
+                        && (p.AuditStatus == AuditStatusEnum.Active
+                            || p.AuditStatus == AuditStatusEnum.Temporary))
                         .SingleOrDefaultAsync();
 
                     if (account == null)
@@ -50,8 +51,11 @@ namespace Raci.Application.Account.Queries
                         PhoneNumber = account.PhoneNumber,
                         Email = account.Email,
                         Gender = account.Gender,
+                        Role = account.Role,
                         Avatar = account.Avatar,
-                        ShopAddress = account.Shop?.Address
+                        ShopGuid = account.Shop?.Id,
+                        ShopAddress = account.Shop?.Address,
+                        Password = account.PasswordHash
                     };
 
                     return response;
@@ -71,9 +75,12 @@ namespace Raci.Application.Account.Queries
             public string LastName { get; set; } = string.Empty;
             public string PhoneNumber { get; set; } = string.Empty;
             public string Email { get; set; } = string.Empty;
-            public GenderEnum Gender { get; set; }
+            public GenderEnum Gender { get; set; } = GenderEnum.NotSet;
+            public RoleEnum Role { get; set; } = RoleEnum.Sale;
             public string Avatar { get; set; } = string.Empty;
+            public Guid? ShopGuid { get; set; }
             public string ShopAddress { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
         }
     }
 }

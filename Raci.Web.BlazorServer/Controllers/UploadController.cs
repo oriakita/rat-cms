@@ -71,12 +71,43 @@ namespace Raci.Web.BlazorServer.Controllers
             }
         }
 
-        [HttpPost("upload/avatar-image/{accountId}")]
-        public IActionResult UploadAvatarImage(IFormFile file, Guid accountId)
+        [HttpPost("upload/avatar/{accountId}")]
+        public async Task<IActionResult> UploadAvatarImage(IFormFile file, Guid accountId)
         {
             try
             {
-                UploadFile(file, "", "");
+
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                string directoryPath = @$"\images\avatar\{accountId}";
+
+                UploadFile(file, directoryPath, fileName);
+
+                var account = await _context.RaciAccounts
+                    .Where(p => p.Id == accountId
+                        && p.AuditStatus != AuditStatusEnum.Deleted
+                        && p.AuditStatus != AuditStatusEnum.Undefined)
+                    .SingleOrDefaultAsync();
+
+                if (account != null)
+                {
+                    account.Avatar = @$"{directoryPath}\{fileName}";
+
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    _context.RaciAccounts.Add(new Domain.RaciAccountAggregate.RaciAccount() 
+                    { 
+                        Id = accountId,
+                        Avatar = @$"{directoryPath}\{fileName}",
+                        Role = Domain.Enums.RoleEnum.Sale,
+                        Gender = Domain.Enums.GenderEnum.NotSet,
+                        AuditStatus = AuditStatusEnum.Temporary
+                    });
+
+                    await _context.SaveChangesAsync();
+                }
+
                 return StatusCode(200);
             }
             catch (Exception e)

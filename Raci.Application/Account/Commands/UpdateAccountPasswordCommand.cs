@@ -51,7 +51,14 @@ namespace Raci.Application.Account.Commands
                         throw new ApplicationException($"Tài khoản Id {command.AccountId} không tồn tại.");
                     }
 
+                    var userManager = new UserManager(_context);
 
+                    if (!userManager.IsMatchPassword(account.PasswordHash, account.Salt, command.OldPassword))
+                    {
+                        throw new ApplicationException($"Mật khẩu cũ không đúng");
+                    }
+
+                    account.PasswordHash = userManager.GeneratePasswordHash(command.NewPassword, account.Salt);
 
                     account.UpdatedPasswordDate = DateTime.UtcNow;
                     account.UpdatedDate = DateTime.UtcNow;

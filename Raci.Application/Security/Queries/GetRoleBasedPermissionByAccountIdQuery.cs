@@ -33,13 +33,12 @@ namespace Raci.Application.Security.Queries
                 {
                     var rolePermissionModels = new List<RolePermissionDto>();
 
-
-                    var rolePermissions = _context.RolePermissions
+                    var rolePermissions = await _context.RolePermissions
                         .Where(p => p.Role.UserAssignments.Any(a => a.RaciAccount.Id == query.AccountId))
                         .Include(s => s.Function)
                             .ThenInclude(s => s.Module)
                                 .ThenInclude(s => s.Functions).ThenInclude(s => s.Actions)
-                        .ToList();
+                        .ToListAsync();
 
                     rolePermissionModels = _mapper.Map<List<RolePermissionDto>>(rolePermissions);
 

@@ -14,6 +14,8 @@ namespace Raci.Persistence
 
         public string LanguageCode { get; set; } = "vi";
 
+        public string Avatar { get; set; } = string.Empty;
+
         public List<RolePermissionDto> UserPermissions { get; set; } = new List<RolePermissionDto>();
     }
 }

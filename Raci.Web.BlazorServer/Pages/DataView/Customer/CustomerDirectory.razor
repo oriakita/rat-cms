@@ -1,4 +1,4 @@
-﻿@using Raci.Common.Helpers;
+﻿@using Raci.Web.BlazorServer.Shared.Components
 
 @page "/data-view/customer"
 
@@ -23,7 +23,7 @@
                     <RadzenGridColumn TItem="CustomerDto" Property="Email" Title="Email" />
                     <RadzenGridColumn TItem="CustomerDto" Property="AuditStatus" Title="Trạng thái" Width="100px">
                         <Template Context="data">
-                            @(data.AuditStatus.ToEnumString())
+                            <AuditStatusEnumDisplay Value="@data.AuditStatus" />
                         </Template>
                     </RadzenGridColumn>
                 </Columns>

@@ -15,7 +15,7 @@ namespace Raci.Application.Account.Commands
 {
     public class UpdateProfileCommand : IRequest
     {
-        public AccountDetailsGetByIdQuery.ResponseDto Profile { get; set; }
+        public GetMyProfileQuery.ResponseDto Profile { get; set; }
 
         //public Guid AccountId { get; set; }
 

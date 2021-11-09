@@ -1,0 +1,26 @@
+﻿@using Raci.Common.Enums
+@using Raci.Common.Helpers
+
+@switch (Value)
+{
+    case AuditStatusEnum.Active:
+        <span class="badge badge-primary">@Value.GetDisplayValue()</span>
+        break;
+
+    case AuditStatusEnum.Inactive:
+        <span class="badge badge-warning">@Value.GetDisplayValue()</span>
+        break;
+
+    case AuditStatusEnum.Deleted:
+        <span class="badge badge-danger">@Value.GetDisplayValue()</span>
+        break;
+
+    case AuditStatusEnum.Undefined:
+    default:
+        <span>-</span>
+        break;
+}
+
+@code {
+    [Parameter] public AuditStatusEnum Value { get; set; }
+}

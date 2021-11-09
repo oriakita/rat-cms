@@ -35,7 +35,7 @@
             {
                 new Claim(ClaimTypes.NameIdentifier, userGuid.ToString()),
                 new Claim(ClaimTypes.Name, userName),
-                new Claim(ClaimTypes.Email, email),
+                new Claim(ClaimTypes.Email, email ?? ""),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_tokenManagement.SecretKey));
