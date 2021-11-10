@@ -1,0 +1,9 @@
+﻿<RadzenDropDown AllowClear="true" TValue="Guid"
+                FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                FilterOperator="StringFilterOperator.StartsWith" AllowFiltering="true"
+                Data=@_allRoles TextProperty="Name" ValueProperty="Id" Change=@(args => OnChange(args))
+                Style="width: 100%">
+    <Template>
+        @((context as RoleSelectorDto).Name)
+    </Template>
+</RadzenDropDown>

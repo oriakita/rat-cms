@@ -124,7 +124,7 @@ namespace Raci.Web.BlazorServer
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPreProcessorBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
             services.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestValidationBehavior<>));
-            services.AddMediatR(option=>option.AsScoped(), typeof(LoginRequest.Handler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(LoginRequest.Handler).GetTypeInfo().Assembly);
             var validators = AssemblyScanner.FindValidatorsInAssemblyContaining<LoginRequest.Validator>();
             validators.ForEach(validator => services.AddTransient(validator.InterfaceType, validator.ValidatorType));
         }
@@ -137,7 +137,7 @@ namespace Raci.Web.BlazorServer
                 using var scope = serviceProvider.CreateScope();
                 var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
-               // var mediator = serviceProvider.GetRequiredService<IMediator>();
+                //var mediator = serviceProvider.GetRequiredService<IMediator>();
                 //var dbContext = serviceProvider.GetRequiredService<RaciDbContext>();
 
                 var loggingUser = new LoggingUser();

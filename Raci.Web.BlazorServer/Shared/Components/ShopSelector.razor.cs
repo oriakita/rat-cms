@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using MediatR;
+using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
+using Raci.Application.Shop.Queries;
 using Raci.Common.Enums;
 using Raci.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Raci.Application.Shop.Queries.GetShopSelectorQuery;
 
 namespace Raci.Web.BlazorServer.Shared.Components
 {
@@ -15,8 +18,12 @@ namespace Raci.Web.BlazorServer.Shared.Components
         [Inject]
         private RaciDbContext _context { get; set; }
 
+        [Inject]
+        private IMediator _mediator { get; set; }
+
+
         [Parameter]
-        public EventCallback<Guid> ValueChanged { get; set; }
+        public EventCallback<Guid?> ValueChanged { get; set; }
 
         [Parameter]
         public Guid? Value { get; set; }
@@ -25,42 +32,73 @@ namespace Raci.Web.BlazorServer.Shared.Components
 
         private ShopTinyDto _selectedShop = new ShopTinyDto();
 
-        protected override async Task OnInitializedAsync()
+        //protected override async Task OnInitializedAsync()
+        //{
+        //    try
+        //    {
+                
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             try
             {
-                _shop = await _context.Shops
-                    .Where(p => p.AuditStatus == AuditStatusEnum.Active)
-                    .Select(p => new ShopTinyDto
-                    {
-                        Id = p.Id,
-                        ShopName = p.Name,
-                        Address = p.Address
-                    }).ToListAsync();
+                await base.OnAfterRenderAsync(firstRender);
+
+                if (firstRender)
+                {
+                    _shop = await GetShopDataSourceAsync();
+                    var selectedShop = _shop.SingleOrDefault(p => p.Id == Value);
+                    if (selectedShop != null) _selectedShop = selectedShop;
+
+                    StateHasChanged();
+                }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw e;
             }
         }
 
-        protected override void OnParametersSet()
+        private async Task<List<ShopTinyDto>> GetShopDataSourceAsync()
         {
-            _selectedShop = _shop.SingleOrDefault(p => p.Id == Value);
+            var shops = await _mediator.Send(new GetShopSelectorQuery());
+
+            return shops;
         }
+
+        //protected override void OnParametersSet()
+        //{
+        //    _selectedShop = _shop.SingleOrDefault(p => p.Id == Value);
+        //}
 
         private async Task OnChange(object value)
         {
-            _selectedShop = _shop.SingleOrDefault(p => p.Id == Guid.Parse(value.ToString()));
+            try
+            {
+                if (value == null || Guid.Parse(value.ToString()) == Guid.Empty)
+                {
+                    _selectedShop = new ShopTinyDto();
+                    await ValueChanged.InvokeAsync(null);
+                    return;
+                }
 
-            await ValueChanged.InvokeAsync(_selectedShop.Id);
+                var shop = _shop.SingleOrDefault(p => p.Id == Guid.Parse(value.ToString()));
+
+                if (shop != null) _selectedShop = shop;
+
+                await ValueChanged.InvokeAsync(_selectedShop.Id);
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
         }
 
-        public class ShopTinyDto
-        {
-            public Guid Id { get; set; }
-            public string ShopName { get; set; } = string.Empty;
-            public string Address { get; set; } = string.Empty;
-        }
     }
 }

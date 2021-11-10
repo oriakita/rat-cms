@@ -31,6 +31,7 @@ namespace Raci.Application.Account.Queries
                 {
                     var account = await _context.RaciAccounts
                         .Include(p => p.Shop)
+                        .Include(p => p.UserAssignments)
                         .AsNoTracking()
                         .Where(p => p.Id == query.AccountGuid
                         && (p.AuditStatus == AuditStatusEnum.Active
@@ -55,8 +56,11 @@ namespace Raci.Application.Account.Queries
                         Avatar = account.Avatar,
                         ShopGuid = account.Shop?.Id,
                         ShopAddress = account.Shop?.Address,
-                        Password = account.PasswordHash
+                        Password = account.PasswordHash,
                     };
+
+                    var userAssignment = account.UserAssignments.FirstOrDefault();
+                    response.RoleGuid = userAssignment == null ? Guid.Empty : userAssignment.RoleId;
 
                     return response;
                 }
@@ -80,6 +84,7 @@ namespace Raci.Application.Account.Queries
             public string Avatar { get; set; } = string.Empty;
             public Guid? ShopGuid { get; set; }
             public string ShopAddress { get; set; } = string.Empty;
+            public Guid RoleGuid { get; set; }
             public string Password { get; set; } = string.Empty;
         }
     }

@@ -39,6 +39,8 @@ namespace Raci.Application.Order.Commands
                 try
                 {
                     var order = await _context.Orders
+                        .Include(p => p.OrderDetails)
+                        .ThenInclude(p => p.Item)
                         .Where(p => p.Id == command.OrderId
                             && p.OrderStatus == OrderStatusEnum.Created)
                         .SingleOrDefaultAsync();
@@ -54,6 +56,15 @@ namespace Raci.Application.Order.Commands
 
                     order.UpdatedBy = command.AccountId;
                     order.UpdatedDate = DateTime.UtcNow;
+
+                    #region Update Soldered number of item
+
+                    foreach(var detail in order.OrderDetails)
+                    {
+                        detail.Item.NumberOfOrders = detail.Item.NumberOfOrders + detail.Quantity;
+                    }
+
+                    #endregion
 
                     await _context.SaveChangesAsync();
 

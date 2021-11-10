@@ -1,8 +1,11 @@
-﻿<RadzenDropDown AllowClear="true" TValue="Guid"
+﻿@using static Raci.Application.Shop.Queries.GetShopSelectorQuery
+
+<RadzenDropDown AllowClear="true" TValue="Guid"
                 FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
                 FilterOperator="StringFilterOperator.StartsWith" AllowFiltering="true"
                 Data=@_shop TextProperty="ShopName" ValueProperty="Id" Change=@(args => OnChange(args))
-                Style="width: 100%">
+                Style="width: 100%"
+                Value="_selectedShop.Id">
     <Template>
         @((context as ShopTinyDto).ShopName) - @((context as ShopTinyDto).Address)
     </Template>
