@@ -20,7 +20,11 @@
                                         <a href="/order-process/@data.Id">@data.Id</a>
                                     </Template>
                                 </RadzenGridColumn>
-                                <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="CreatedDate" Title="Ngày tạo" />
+                                <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="CreatedDate" Title="Ngày tạo">
+                                    <Template Context="data">
+                                        <Raci.Web.BlazorServer.Shared.Components.DateTimeDisplay Value="@data.CreatedDate"/>
+                                    </Template>
+                                </RadzenGridColumn>
                                 <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="CustomerName" Title="Tên khách hàng" />
                                 <RadzenGridColumn TItem="OrderOnProcessingGetAllQuery.OrderProcessingDto" Property="TotalPay" Title="Tổng thanh toán">
                                     <Template Context="data">

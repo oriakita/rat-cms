@@ -115,7 +115,7 @@ namespace Raci.Web.BlazorServer
             services.AddDbContext<RaciDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("RaciConnection") + "Application Name=RaciCms;",
-                    x => x.MigrationsHistoryTable("__EFMigrationsHistory", "dbo")));
+                    x => x.MigrationsHistoryTable("__EFMigrationsHistory", "dbo")), ServiceLifetime.Transient);
         }
 
         void RegisterMediator(IServiceCollection services)

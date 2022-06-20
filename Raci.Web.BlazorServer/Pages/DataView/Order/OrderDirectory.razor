@@ -21,7 +21,11 @@
                             @(data.OrderStatus.ToEnumString())
                         </Template>
                     </RadzenGridColumn>
-                    <RadzenGridColumn TItem="OrderDto" Property="CreatedDate" Title="Thời gian" />
+                    <RadzenGridColumn TItem="OrderDto" Property="CreatedDate" Title="Thời gian">
+                        <Template Context="data">
+                            <Raci.Web.BlazorServer.Shared.Components.DateTimeDisplay Value="@data.CreatedDate"/>
+                        </Template>
+                    </RadzenGridColumn>
                     <RadzenGridColumn TItem="OrderDto" Property="CashAdvance" Title="Tổng thanh toán">
                         <Template Context="data">
                             @(data.TotalPay.ToString("N0"))

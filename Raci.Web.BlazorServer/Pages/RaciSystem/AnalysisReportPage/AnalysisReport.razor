@@ -1,0 +1,97 @@
+﻿@using Raci.Web.BlazorServer.Shared.Base;
+@using Raci.Web.BlazorServer.Shared.Components
+
+@page "/analysis-report"
+
+@attribute [Authorize]
+
+@inherits DetailPageBase
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb" style="background-color: white">
+                    <li class="breadcrumb-item"><a href="/">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Báo cáo phân tích</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <RadzenTabs>
+                <Tabs>
+                    <RadzenTabsItem Text="Doanh thu">
+                        <RadzenFieldset Text="Doanh thu theo ngày">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <p>Chọn ngày</p>
+                                    <RadzenDatePicker @bind-Value=@_selectedDate DateFormat="d" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <p>Chọn cửa hàng</p>
+                                    <ShopSelector ValueChanged="@((value) => { _selectedShopIdDateSection = value; })" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <button class="btn btn-primary" @onclick="OnViewRevenueByDateButtonClicked" style="margin-top: 35px;">Xem</button>
+                                </div>
+                            </div>
+
+                            @if (_orderReportByDateAndShopState.IsReady)
+                            {
+                                <div class="row mt-3">
+                                    <div class="col-lg-12">
+                                        <h4 style="font-weight: bold">Tổng Doanh Thu: <span>@(_orderReportByDateAndShopState.Details.TotalRevenue.ToString("N0")) đ</span></h4>
+                                        <h4 style="font-weight: bold">Tổng sản phẩm đã bán: <span>@_orderReportByDateAndShopState.Details.TotalItems</span></h4>
+                                    </div>
+                                </div>
+                            }
+                        </RadzenFieldset>
+
+                        <RadzenFieldset Text="Doanh thu theo tháng" Style="margin-top: 20px;">
+                            <div class="row">
+                                <div class="col-lg-2">
+                                    <p>Chọn tháng</p>
+                                    <input type="month" class="form-control" @bind-value="_selectedMonth" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <p>Chọn cửa hàng</p>
+                                    <ShopSelector ValueChanged="@((value) => { _selectedShopIdMonthSection = value; })" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <button class="btn btn-primary" @onclick="OnViewRevenueByMonthButtonClicked" style="margin-top: 35px;">Xem biểu đồ</button>
+                                </div>
+                            </div>
+
+                            @if (_orderReportByMonthAndShopState.IsReady)
+                            {
+                                <div class="row mt-3">
+                                    <div class="col-lg-12">
+                                        <RadzenChart>
+                                            <RadzenColumnSeries Data="@_orderReportByMonthAndShopState.Details" 
+                                                                CategoryProperty="DayName" 
+                                                                Title="@($"{_selectedMonth.GetValueOrDefault().Month.ToString()}/{_selectedMonth.GetValueOrDefault().Year.ToString()}")" 
+                                                                LineType="LineType.Dashed" 
+                                                                ValueProperty="TotalRevenue" />
+                                            <RadzenColumnOptions Radius="5" />
+                                            <RadzenValueAxis Formatter="@FormatAsVND">
+                                                <RadzenGridLines Visible="true" />
+                                                <RadzenAxisTitle Text="Doanh thu VNĐ" />
+                                            </RadzenValueAxis>
+                                        </RadzenChart>
+                                    </div>
+                                </div>
+                            }
+                        </RadzenFieldset>
+                    </RadzenTabsItem>
+
+                    <RadzenTabsItem Text="Theo cửa hàng">
+                            
+                    </RadzenTabsItem>
+                </Tabs>
+            </RadzenTabs>
+        </div>
+    </div>
+
+</div>

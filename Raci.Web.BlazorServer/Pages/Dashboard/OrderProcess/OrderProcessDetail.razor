@@ -42,7 +42,7 @@
                                         <p><b>Thời gian đặt hàng:</b></p>
                                     </div>
                                     <div class="col-lg-9">
-                                        <p>@_state.Details.CreatedDate</p>
+                                        <Raci.Web.BlazorServer.Shared.Components.DateTimeDisplay Value="@_state.Details.CreatedDate"/>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -93,7 +93,7 @@
                                 </Columns>
                             </RadzenGrid>
 
-                            <div class="row">
+                            <div class="row mt-2">
                                 <div class="col-lg-12 text-right">
                                     <p><b>TỔNG TIỀN HÀNG</b>: @_state.Details.TotalPrice.ToString("N0") VND</p>
                                 </div>
